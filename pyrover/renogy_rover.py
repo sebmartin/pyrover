@@ -27,7 +27,7 @@ from .types import (
 logger = logging.getLogger(__name__)
 
 
-def _create_controller(port: int, address: str):
+def _create_controller(port: str, address: int):
     return minimalmodbus.Instrument(port=port, slaveaddress=address)
 
 
@@ -36,8 +36,14 @@ class RenogyRoverController:
     Communicates using the Modbus RTU protocol (via provided USB<->RS232 cable)
     """
 
-    def __init__(self, port: int, address: str, baudrate=9600, timeout=0.5):
-        self.device = _create_controller(port, address)
+    def __init__(self, port: str, address: int=1, baudrate=9600, timeout=0.5):
+        """
+        :param port: Serial port (e.g., '/dev/ttyUSB0' or 'COM3')
+        :param address: Modbus slave address (default is 1)
+        :param baudrate: Baud rate for serial communication (default is 9600)
+        :param timeout: Timeout for serial communication in seconds (default is 0.5)
+        """
+        self.device = _create_controller(port=port, address=address)
         assert self.device.serial is not None, f"modbus failed to initialize; port={port} address={address}"
 
         self.device.serial.baudrate = baudrate
@@ -66,7 +72,7 @@ class RenogyRoverController:
 
     def _read_registers(self, address: int, number_of_registers: int, **kwargs) -> List[int]:
         values = self.device.read_registers(address, number_of_registers=number_of_registers, **kwargs)
-        logger.debug(f"read_registers[address={hex(address)} value={(hex(v) for v in values)}]")
+        logger.debug(f"read_registers[address={hex(address)} value={list(hex(v) for v in values)}]")
         return values
 
     def _read_string(self, address: int, number_of_registers: int, **kwargs) -> str:
@@ -602,7 +608,7 @@ class RenogyRoverController:
         """
         LED load current setting (amps)
         """
-        return self._read_register(0xE020) * 10 / 1000.0
+        return self._read_register(0xE020) * 10 / 1000.0  # value is N * 10 mA (N * 10 / 1000)
 
     # Special power control
     def charging_mode_controlled_by(self) -> Union[ChargingModeController, None]:

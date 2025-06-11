@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntFlag
 
 
-class BatteryType(Enum):
+class BatteryType(IntFlag):
     OPEN = 0x01
     SEALED = 0x02
     GEL = 0x03
@@ -18,7 +18,7 @@ class BatteryType(Enum):
         }.get(self, "Unknown battery type")
 
 
-class ProductType(Enum):
+class ProductType(IntFlag):
     CHARGE_CONTROLLER = 0x00
     INVERTER = 0x01
 
@@ -29,7 +29,7 @@ class ProductType(Enum):
         }.get(self, "Unknown product type")
 
 
-class Toggle(Enum):
+class Toggle(IntFlag):
     OFF = 0x00
     ON = 0x01
 
@@ -40,7 +40,7 @@ class Toggle(Enum):
         }.get(self, "Unknown on/off state")
 
 
-class ChargingState(Enum):
+class ChargingState(IntFlag):
     DEACTIVATED = 0x00
     ACTIVATED = 0x01
     MPPT = 0x02
@@ -61,7 +61,7 @@ class ChargingState(Enum):
         }.get(self, "Unknown charging state")
 
 
-class Fault(Enum):
+class Fault(IntFlag):
     # Lower bits 0-15 are reserved for future use
     BATTERY_OVER_DISCHARGE = 1 << 16
     BATTERY_OVER_VOLTAGE = 1 << 17
@@ -99,7 +99,7 @@ class Fault(Enum):
         }.get(self, "Unknown fault")
 
 
-class ChargingModeController(Enum):
+class ChargingModeController(IntFlag):
     SOC = 0x00
     VOLTAGE = 0x01
 
@@ -110,7 +110,7 @@ class ChargingModeController(Enum):
         }.get(self, "Unknown charging mode controller")
 
 
-class ChargingMethod(Enum):
+class ChargingMethod(IntFlag):
     DIRECT = 0x00
     PWM = 0x01
 
@@ -121,7 +121,7 @@ class ChargingMethod(Enum):
         }.get(self, "Unknown charging method")
 
 
-class LoadWorkingModes(Enum):
+class LoadWorkingModes(IntFlag):
     SOLE_LIGHT_CONTROL = 0x00
     OFF_AFTER_1H = 0x01
     OFF_AFTER_2H = 0x02

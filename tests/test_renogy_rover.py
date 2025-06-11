@@ -25,7 +25,7 @@ def fake_modbus():
 def controller(fake_modbus):
     with mock.patch("pyrover.renogy_rover._create_controller") as mock_create_controller:
         mock_create_controller.return_value = fake_modbus
-        yield RenogyRoverController(port=123, address="/dev/ttyUSB0")
+        yield RenogyRoverController(port="/dev/ttyUSB0", address=123)
 
 
 def test_controller_init_fails_if_controller_serial_is_none(fake_modbus):
@@ -33,7 +33,7 @@ def test_controller_init_fails_if_controller_serial_is_none(fake_modbus):
     with mock.patch("pyrover.renogy_rover._create_controller") as mock_create_controller:
         mock_create_controller.return_value = fake_modbus
         with pytest.raises(AssertionError):
-            RenogyRoverController(port=123, address="/dev/ttyUSB0")
+            RenogyRoverController(port="/dev/ttyUSB0", address=123)
 
 
 @pytest.mark.parametrize(
