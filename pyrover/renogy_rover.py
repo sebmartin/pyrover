@@ -36,7 +36,7 @@ class RenogyRoverController:
     Communicates using the Modbus RTU protocol (via provided USB<->RS232 cable)
     """
 
-    def __init__(self, port: str, address: int=1, baudrate=9600, timeout=0.5):
+    def __init__(self, port: str, address: int = 1, baudrate: int = 9600, timeout: float = 0.5):
         """
         :param port: Serial port (e.g., '/dev/ttyUSB0' or 'COM3')
         :param address: Modbus slave address (default is 1)
