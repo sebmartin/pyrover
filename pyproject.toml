@@ -1,24 +1,30 @@
-[tool.poetry]
+[project]
 name = "pyrover"
 version = "0.1.0"
 description = "A full-featured python client for the Renogy Rover MPPT"
-authors = ["Seb Martin"]
-license = "MIT"
 readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Seb Martin" }]
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = ["pyserial>=3.5,<4.0", "minimalmodbus==1.0.2"]
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-pyserial = ">=3.5,<4.0"
-minimalmodbus = "==1.0.2"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.5"
-ruff = "^0.11.5"
-pyright = "^1.1.399"
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.11.5", "pyright>=1.1.399"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.ruff]
 line-length = 120

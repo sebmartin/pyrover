@@ -1,4 +1,4 @@
-name: CI
+name: 🚀 Python CI Pipeline
 
 on:
   push:
@@ -11,32 +11,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python 3.8 Environment
         uses: actions/setup-python@v5
         with:
           python-version: "3.8"
 
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3
-        with:
-          poetry-version: "1.8.2"
-
-      - name: Install dependencies
+      - name: 📦 Install Dependencies & Test Extras
         run: |
-          poetry install --with dev
+          python -m pip install --upgrade pip
+          pip install .[dev]
 
-      - name: Run Ruff (lint and format check)
+      - name: 🔍 Run Ruff Linter & Formatter Checks
         run: |
-          poetry run ruff check .
-          poetry run ruff format --check .
+          ruff check .
+          ruff format --check .
 
-      - name: Run Pyright (type checking)
+      - name: 🛠️ Run Pyright Type Checker
         run: |
-          poetry run pyright
+          pyright
 
-      - name: Run pytest
+      - name: 🧪 Execute Pytest Unit Tests
         run: |
-          poetry run pytest
+          pytest -vv tests --durations 10
