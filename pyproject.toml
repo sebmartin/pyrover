@@ -1,6 +1,6 @@
 [project]
 name = "pyrover"
-version = "0.1.0"
+version = "0.9.0"
 description = "A full-featured python client for the Renogy Rover MPPT"
 readme = "README.md"
 license = { text = "Apache-2.0" }
