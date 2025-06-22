@@ -35,4 +35,4 @@ jobs:
 
       - name: 🧪 Execute Pytest Unit Tests
         run: |
-          pytest -vv tests --durations 10
+          pytest -vv tests --cov --durations 10

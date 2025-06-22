@@ -14,7 +14,7 @@ classifiers = [
 dependencies = ["pyserial>=3.5,<4.0", "minimalmodbus==1.0.2"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.11.5", "pyright>=1.1.399"]
+dev = ["pytest>=8.0", "ruff>=0.11.5", "pyright>=1.1.399", "pytest-cov"]
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
