@@ -116,7 +116,7 @@ class RenogyRoverController:
 
     def product_model(self) -> str:
         """
-        Product model
+        Product model/SKU e.g. "RNG-CTRL-RVR40"
         """
         return self._read_string(0x000C, number_of_registers=8).strip()
 
@@ -156,7 +156,7 @@ class RenogyRoverController:
     # Charging information
     def battery_percentage(self) -> int:
         """
-        Current battery capacity value (percentage)
+        Current battery state of charge (SOC) (percentage)
         """
         return self._read_register(0x0100)
 
@@ -226,7 +226,7 @@ class RenogyRoverController:
 
     def charging_power(self) -> int:
         """
-        Charging power (watts)
+        Charging power to battery (watts)
         """
         return self._read_register(0x0109)
 
@@ -261,10 +261,12 @@ class RenogyRoverController:
         """
         return self._read_register(0x010F)
 
-    def max_discharging_power_today(self) -> int:
+    def min_charging_power_today(self) -> int:
         """
-        Maximum discharging power for the current day (watts)
+        Minimum charging power for the current day (watts)
         """
+        # NOTE: Some modbus protocol docs claim this is "Max. discharging power of the current day"
+        #   but real world sampling seems to disagree with that.
         return self._read_register(0x0110)
 
     def charging_amphours_today(self) -> int:
@@ -283,17 +285,19 @@ class RenogyRoverController:
         """
         Power generated today (kilowatt hours)
         """
-        return self._read_register(0x0113) / 10000.0
+        # NOTE: Some modbus protocol docs claim this should be divided by 10_000.0
+        #   but real world sampling seems to disagree with that.
+        return self._read_register(0x0113) / 100.0
 
     def power_consumption_today(self) -> float:
         """
         Power consumed today (kilowatt hours)
         """
-        return self._read_register(0x0114) / 10000.0
+        return self._read_register(0x0114) / 10_000.0
 
     def total_operating_days(self) -> int:
         """
-        Total number of operating days
+        Total number of operating/running days
         """
         return self._read_register(0x0115)
 
@@ -327,15 +331,19 @@ class RenogyRoverController:
         """
         Total power generated (kilowatt hours)
         """
+        # NOTE: Some modbus protocol docs claim this should be divided by 10_000.0
+        #   but real world sampling seems to disagree with that.
         registers = self._read_registers(0x011C, number_of_registers=2)
-        return (registers[0] << 16 | registers[1]) / 10000.0
+        return (registers[0] << 16 | registers[1]) / 1000.0
 
     def cumulative_power_consumption(self) -> float:
         """
         Total power consumed (kilowatt hours)
         """
+        # NOTE: Some modbus protocol docs claim this should be divided by 10_000.0
+        #   but real world sampling seems to disagree with that.
         registers = self._read_registers(0x011E, number_of_registers=2)
-        return (registers[0] << 16 | registers[1]) / 10000.0
+        return (registers[0] << 16 | registers[1]) / 1000.0
 
     def set_street_light(self, state: Toggle):
         """
@@ -357,6 +365,14 @@ class RenogyRoverController:
             logger.warning(f"unknown street light status ({high_byte})")
             return None
 
+    def street_light_brightness(self) -> int:
+        """
+        Street light (load) brightness percentage
+        """
+        register = self._read_register(0x0120)
+        high_byte = register >> 8
+        return high_byte & 0x7F
+
     def set_street_light_brightness(self, intensity: int):
         """
         Set street light (load) brightness percentage
@@ -367,14 +383,6 @@ class RenogyRoverController:
             logger.warning(f"intensity ({intensity}) must be between 0 and 100")
             return
         self.device.write_register(0xE001, intensity)
-
-    def street_light_brightness(self) -> int:
-        """
-        Street light (load) brightness percentage
-        """
-        register = self._read_register(0x0120)
-        high_byte = register >> 8
-        return high_byte & 0x7F
 
     def charging_state(self) -> Union[ChargingState, None]:
         """
