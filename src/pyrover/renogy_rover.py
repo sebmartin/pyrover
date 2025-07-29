@@ -286,14 +286,14 @@ class RenogyRoverController:
         Power generated today (kilowatt hours)
         """
         # NOTE: Some modbus protocol docs claim this should be divided by 10_000.0
-        #   but real world sampling seems to disagree with that.
-        return self._read_register(0x0113) / 100.0
+        #   while other versions claim it should be divided by 1_000.0
+        return self._read_register(0x0113) / 1_000.0
 
     def power_consumption_today(self) -> float:
         """
         Power consumed today (kilowatt hours)
         """
-        return self._read_register(0x0114) / 10_000.0
+        return self._read_register(0x0114) / 1_000.0
 
     def total_operating_days(self) -> int:
         """
@@ -332,18 +332,18 @@ class RenogyRoverController:
         Total power generated (kilowatt hours)
         """
         # NOTE: Some modbus protocol docs claim this should be divided by 10_000.0
-        #   but real world sampling seems to disagree with that.
+        #   while other versions claim it should be divided by 1_000.0
         registers = self._read_registers(0x011C, number_of_registers=2)
-        return (registers[0] << 16 | registers[1]) / 1000.0
+        return (registers[0] << 16 | registers[1]) / 1_000.0
 
     def cumulative_power_consumption(self) -> float:
         """
         Total power consumed (kilowatt hours)
         """
         # NOTE: Some modbus protocol docs claim this should be divided by 10_000.0
-        #   but real world sampling seems to disagree with that.
+        #   while other versions claim it should be divided by 1_000.0
         registers = self._read_registers(0x011E, number_of_registers=2)
-        return (registers[0] << 16 | registers[1]) / 1000.0
+        return (registers[0] << 16 | registers[1]) / 1_000.0
 
     def set_street_light(self, state: Toggle):
         """
@@ -616,7 +616,7 @@ class RenogyRoverController:
         """
         LED load current setting (amps)
         """
-        return self._read_register(0xE020) * 10 / 1000.0  # value is N * 10 mA (N * 10 / 1000)
+        return self._read_register(0xE020) * 10 / 1_000.0  # value is N * 10 mA (N * 10 / 1000)
 
     # Special power control
     def charging_mode_controlled_by(self) -> Union[ChargingModeController, None]:
